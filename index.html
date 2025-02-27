@@ -1,10 +1,226 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>导航页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 搜索框样式 */
+        .search-group {
+            margin: 2rem auto;
+            max-width: 600px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #007bff;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 8px rgba(0,123,255,0.3);
+        }
+
+        .search-btn {
+            padding: 12px 30px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .search-btn:hover {
+            background: #0056b3;
+        }
+
+        /* 原有样式保持不变 */
+        h1 {
+            text-align: center;
+            color: #2d3436;
+            margin-bottom: 2rem;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .nav-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: #333;
+            display: block;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background: #007bff;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .search-group {
+                margin: 1.5rem auto;
+                flex-direction: column;
+            }
+
+            .search-btn {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .nav-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .nav-card {
+                padding: 1rem;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #1a1a1a;
+                color: #ffffff;
+            }
+
+            .nav-card {
+                background: #2d2d2d;
+                color: #ffffff;
+            }
+
+            .search-input {
+                background: #333;
+                color: #fff;
+                border-color: #555;
+            }
+        }
+
+        /* iframe相关样式 */
+        .iframe-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+        }
+        .iframe-header {
+            padding: 10px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        #tool-iframe {
+            flex: 1;
+            border: none;
+        }
+    </style>
 </head>
 <body>
-<a href="tools/export-wenan-images.html">文案工具</a>
+<div class="container">
+    <!-- 新增百度搜索框 -->
+    <form class="search-group" action="https://www.baidu.com/s" target="_blank">
+        <input
+                type="text"
+                name="wd"
+                class="search-input"
+                placeholder="输入搜索内容..."
+                required
+                autocomplete="off"
+        >
+        <button type="submit" class="search-btn">百度搜索</button>
+    </form>
+
+<!--    <h1>工具箱</h1>-->
+    <div class="nav-grid">
+        <a class="nav-card" href="javascript:void(0)" onclick="openTool('tools/export-wenan-images.html','文案工具')">
+            <h2>文案工具</h2>
+            <p>文字图片生成与导出</p>
+        </a>
+        <!-- 其他导航卡片保持不变 -->
+        <a href="#" class="nav-card">
+            <h2>设计工具</h2>
+            <p>图片编辑与设计</p>
+        </a>
+        <a href="#" class="nav-card">
+            <h2>开发工具</h2>
+            <p>开发者实用工具</p>
+        </a>
+    </div>
+
+    <!-- iframe容器 -->
+    <div class="iframe-container">
+        <div class="iframe-header">
+            <span id="iframe_name_span">工具</span>
+            <button class="close-btn" onclick="closeIframe()">关闭</button>
+        </div>
+        <iframe id="tool-iframe"></iframe>
+    </div>
+</div>
+<script>
+    function openTool(url,name) {
+        document.querySelector('.iframe-container').style.display = 'flex';
+        document.getElementById('tool-iframe').src = url;
+        document.getElementById('iframe_name_span').innerHTML = name;
+
+    }
+
+    function closeIframe() {
+        document.querySelector('.iframe-container').style.display = 'none';
+        document.getElementById('tool-iframe').src = '';
+    }
+</script>
 </body>
 </html>

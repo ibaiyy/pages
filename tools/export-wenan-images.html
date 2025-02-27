@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>图片文案生成器</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<!--        <script src="./../js/xlsx.full.min.js"></script>-->
+<!--        <script src="./../js/html2canvas.min.js"></script>-->
+        <link href="./../css/button.css" rel="stylesheet" type="text/css">
+    <style>
+        :root {
+            --border-color: #e0e0e0;
+            --bg-color: #f8f9fa;
+            --title-color: #2d3436;
+            --author-color: #636e72;
+            --title-font-size: 66px;
+            --content-font-size: 60px;
+            --author-font-size: 56px;
+        }
+
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            max-width: 80%;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .config-panel {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .margin-inputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .size-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .upload-box {
+            border: 2px dashed #007bff;
+            padding: 30px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 20px 0;
+            background: var(--bg-color);
+        }
+
+        .previews {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .preview-item {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            /*width: 420px; !* 新增固定宽度 *!*/
+            height: 550px; /* 新增固定高度 */
+            overflow: hidden; /* 隐藏溢出内容 */
+
+        }
+
+        .preview-content {
+            height: 400px;
+            overflow: hidden;
+            transform: scale(0.3);
+            transform-origin: top left;
+            width: 1245px;
+            height: 1660px;
+            transform-origin: 0 0; /* 确保缩放原点正确 */
+        }
+
+        .template-container {
+            width: 1245px;
+            height: 1660px;
+            padding: 40px;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            box-sizing: border-box; /* 确保padding不改变总尺寸 */
+        }
+
+        .title-section {
+            font-size: var(--title-font-size);
+            color: var(--title-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .content-section {
+            font-size: var(--content-font-size);
+            line-height: 1.8;
+            color: var(--title-color);
+            min-height: 1200px;
+            /*margin-bottom: 30px;*/
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 30px;
+
+            /* 新增居中布局 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;  /* 垂直居中 */
+            max-width: 80%;          /* 控制内容宽度 */
+            margin: 0 auto;          /* 水平居中 */
+        }
+
+        /* 段落保持左对齐 */
+        .content-section p {
+            text-align: left;
+            width: 100%;
+        }
+
+        .author-section {
+            font-size: var(--author-font-size);
+            color: var(--author-color);
+            text-align: right;
+            margin-top: 25px;
+        }
+
+        .controls {
+            margin: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .color-controls {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+<h1>📱 生成器</h1>
+
+<div class="config-panel">
+    <h3>边距设置 (像素)</h3>
+    <div class="margin-inputs">
+        <input type="number" id="top" placeholder="上边距 (默认100)" min="0">
+        <input type="number" id="right" placeholder="右边距 (默认60)" min="0">
+        <input type="number" id="bottom" placeholder="下边距 (默认60)" min="0">
+        <input type="number" id="left" placeholder="左边距 (默认60)" min="0">
+    </div>
+    <button onclick="applySettings()" class="btn-default">应用设置</button>
+    <button onclick="downloadAll()" id="batchDownload" class="btn-primary">全部下载</button>
+
+    <h3 style="margin-top:15px">配色方案</h3>
+    <div class="color-controls">
+        <button onclick="document.getElementById('bgColor').click()" class="btn-default">背景颜色</button>
+        <button onclick="document.getElementById('textColor').click()" class="btn-default">文字颜色</button>
+        <button onclick="document.getElementById('borderColor').click()" class="btn-default">边框颜色</button>
+
+        <input type="color" id="bgColor" hidden>
+        <input type="color" id="textColor" hidden>
+        <input type="color" id="borderColor" hidden>
+    </div>
+
+    <h3>文字尺寸设置 (px)</h3>
+    <div class="size-controls">
+        <input type="number" id="titleSize" placeholder="标题 (默认66)" min="20">
+        <input type="number" id="contentSize" placeholder="正文 (默认60)" min="20">
+        <input type="number" id="authorSize" placeholder="作者 (默认56)" min="20">
+    </div>
+</div>
+
+<div class="upload-box">
+    <p>拖放Excel文件或 <button onclick="document.getElementById('file').click()" class="btn-default">选择文件</button></p>
+    <input type="file" id="file" accept=".xlsx,.xls" hidden>
+</div>
+
+<div class="previews" id="previews"></div>
+
+<script>
+    // 全局状态管理
+    let isExporting = false;
+
+    let articles = [];
+    let margins = { top: 100, right: 60, bottom: 60, left: 60 };
+
+    // 初始化事件
+    document.getElementById('file').addEventListener('change', handleFile);
+    document.addEventListener('dragover', e => e.preventDefault());
+    document.addEventListener('drop', e => {
+        e.preventDefault();
+        if(e.dataTransfer.files) {
+            document.getElementById('file').files = e.dataTransfer.files;
+            handleFile();
+        }
+    });
+
+    // 初始化默认颜色
+    document.documentElement.style.setProperty('--bg-color', '#f8f9fa');
+    document.documentElement.style.setProperty('--title-color', '#2d3436');
+    document.documentElement.style.setProperty('--border-color', '#e0e0e0');
+
+    // 颜色选择事件监听
+    document.getElementById('bgColor').addEventListener('input', function(e) {
+        document.documentElement.style.setProperty('--bg-color', e.target.value);
+        renderPreviews();
+    });
+
+    document.getElementById('textColor').addEventListener('input', function(e) {
+        document.documentElement.style.setProperty('--title-color', e.target.value);
+        document.documentElement.style.setProperty('--author-color', e.target.value);
+        renderPreviews();
+    });
+
+    document.getElementById('borderColor').addEventListener('input', function(e) {
+        document.documentElement.style.setProperty('--border-color', e.target.value);
+        renderPreviews();
+    });
+
+
+    // 初始化默认值
+    document.getElementById('titleSize').value = 66;
+    document.getElementById('contentSize').value = 60;
+    document.getElementById('authorSize').value = 56;
+
+    // 文字大小改变事件
+    document.querySelectorAll('.size-controls input').forEach(input => {
+        input.addEventListener('change', function() {
+            const value = this.value ? `${this.value}px` : this.placeholder;
+
+            switch(this.id) {
+                case 'titleSize':
+                    document.documentElement.style.setProperty('--title-font-size', value);
+                    break;
+                case 'contentSize':
+                    document.documentElement.style.setProperty('--content-font-size', value);
+                    break;
+                case 'authorSize':
+                    document.documentElement.style.setProperty('--author-font-size', value);
+                    break;
+            }
+
+            // 立即预览更新
+            renderPreviews();
+        });
+    });
+
+
+    async function handleFile() {
+        const file = document.getElementById('file').files[0];
+        if(!file) return;
+
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data);
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(sheet, { header: ['A', 'B', 'C'] });
+
+        articles = json
+            .filter(row => row.A && row.B && row.C)
+            .map(row => ({
+                title: row.A.toString().trim(),
+                content: row.B.toString().trim(),
+                author: row.C.toString().trim()
+            }));
+
+        renderPreviews();
+    }
+
+    function applySettings() {
+        margins = {
+            top: parseInt(document.getElementById('top').value) || 40,
+            right: parseInt(document.getElementById('right').value) || 40,
+            bottom: parseInt(document.getElementById('bottom').value) || 40,
+            left: parseInt(document.getElementById('left').value) || 40
+        };
+        renderPreviews();
+    }
+
+    function renderPreviews() {
+        const container = document.getElementById('previews');
+        container.innerHTML = '';
+
+        articles.forEach((article, index) => {
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.innerHTML = `
+                    <div class="controls">
+                         <button onclick="exportArticle(${index})" class="btn-default">单张下载(${index + 1})</button>
+                    </div>
+                    <div class="preview-content">
+                        ${createTemplate(article).outerHTML}
+                    </div>
+                `;
+            container.appendChild(div);
+        });
+    }
+
+    function createTemplate(article) {
+        const div = document.createElement('div');
+        div.className = 'template-container';
+        div.style.padding = `${margins.top}px ${margins.right}px ${margins.bottom}px ${margins.left}px`;
+
+        div.innerHTML = `
+                <div class="title-section">${article.title}</div>
+                <div class="content-section">${formatContent(article.content)}</div>
+                <div class="author-section">—— ${article.author}</div>
+            `;
+
+        return div;
+    }
+
+    function formatContent(text) {
+        return text.split('\n')
+            .map(p => `<p style="margin: 20px 0">${p}</p>`)
+            .join('');
+    }
+
+    async function exportArticle(index, isBatch = false) {
+        if(isExporting && !isBatch) return;
+
+        const original = document.querySelectorAll('.preview-content')[index];
+        const tempDiv = document.createElement('div');
+        tempDiv.style.cssText = `
+        position: fixed;
+        left: -9999px;
+        width: 1245px;
+        height: 1660px;
+        visibility: visible !important;
+    `;
+
+        const clone = original.cloneNode(true);
+        clone.style.transform = 'none';
+        clone.style.opacity = '1';
+        tempDiv.appendChild(clone);
+        document.body.appendChild(tempDiv);
+
+        try {
+            const canvas = await html2canvas(clone.firstElementChild, {
+                scale: 1,
+                useCORS: true,
+                width: 1245,       // 明确指定画布尺寸
+                height: 1660,
+                windowWidth: 1245, // 新增窗口尺寸
+                windowHeight: 1660,
+                logging: false
+            });
+
+            const link = document.createElement('a');
+            link.download = `文案-${index + 1}.png`;
+            link.href = canvas.toDataURL();
+
+            if(!isBatch) {
+                link.click();
+            } else {
+                // 批量下载使用延时触发
+                setTimeout(() => {
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                }, index * 1000);
+            }
+        } finally {
+            document.body.removeChild(tempDiv);
+        }
+    }
+
+    async function downloadAll() {
+        if(isExporting) return;
+
+        isExporting = true;
+        const btn = document.querySelector('#batchDownload');
+        btn.disabled = true;
+        btn.innerHTML = '<div class="loader"></div> 生成中...';
+
+        try {
+            for(let i = 0; i < articles.length; i++) {
+                await exportArticle(i, true);
+                await new Promise(r => setTimeout(r, 500)); // 增加间隔防止阻塞
+            }
+        } catch (error) {
+            console.error('批量导出失败:', error);
+            alert('部分导出失败，请检查控制台日志');
+        } finally {
+            isExporting = false;
+            btn.disabled = false;
+            btn.textContent = '全部下载';
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    color: white;
+}
+
+.btn-default {
+    background: linear-gradient(135deg,
+    hsl(180, 63%, 55%) 0%,
+    hsl(166, 53%, 56%) 100%);
+}
+
+.btn-default::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.15) 50%,
+    rgba(255,255,255,0) 100%);
+    transform: skewX(-30deg);
+    transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-default:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(117, 174, 236, 0.3);
+}
+
+.btn-default:hover::before {
+    left: 120%;
+}
+
+
+/* 主按钮特效 */
+.btn-primary {
+    background: linear-gradient(135deg,
+    hsl(210, 100%, 60%) 0%,
+    hsl(210, 100%, 50%) 100%);
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.15) 50%,
+    rgba(255,255,255,0) 100%);
+    transform: skewX(-30deg);
+    transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(117, 174, 236, 0.3);
+}
+
+.btn-primary:hover::before {
+    left: 120%;
+}
+
+/* 主题切换按钮 */
+.theme-btn {
+    padding: 12px 24px;
+    border: 2px solid;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.theme-btn.active {
+    color: white !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+/* 加载状态 */
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid;
+    border-color: currentColor transparent;
+    border-radius: 50%;
+    animation: btn-spin 1.2s linear infinite;
+}
+
+@keyframes btn-spin {
+    100% { transform: rotate(360deg); }
+}
+
+/* 按钮尺寸 */
+.btn-sm {
+    padding: 10px 24px;
+    font-size: 14px;
+}
+
+.btn-lg {
+    padding: 16px 40px;
+    font-size: 18px;
+}
+
+/* 按钮颜色系统 */
+.btn-success {
+    background: linear-gradient(135deg,
+    hsl(152, 68%, 50%) 0%,
+    hsl(152, 68%, 40%) 100%);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg,
+    hsl(354, 70%, 54%) 0%,
+    hsl(354, 70%, 44%) 100%);
+}

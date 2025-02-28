@@ -76,9 +76,8 @@
             padding: 15px;
             background: white;
             /*width: 420px; !* 新增固定宽度 *!*/
-            height: 550px; /* 新增固定高度 */
+            height: 480px; /* 新增固定高度 */
             overflow: hidden; /* 隐藏溢出内容 */
-
         }
 
         .preview-content {
@@ -86,14 +85,14 @@
             overflow: hidden;
             transform: scale(0.3);
             transform-origin: top left;
-            width: 1245px;
-            height: 1660px;
+            width: 1080px;
+            height: 1440px;
             transform-origin: 0 0; /* 确保缩放原点正确 */
         }
 
         .template-container {
-            width: 1245px;
-            height: 1660px;
+            width: 1080px;
+            height: 1440px;
             padding: 40px;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
@@ -113,7 +112,7 @@
             font-size: var(--content-font-size);
             line-height: 1.8;
             color: var(--title-color);
-            min-height: 1200px;
+            min-height: 950px;
             /*margin-bottom: 30px;*/
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 30px;
@@ -339,7 +338,8 @@
             div.className = 'preview-item';
             div.innerHTML = `
                     <div class="controls">
-                         <button onclick="exportArticle(${index})" class="btn-default">单张下载(${index + 1})</button>
+                        <span>#${index + 1}</span>
+                         <button onclick="exportArticle(${index})" class="btn-default">下载</button>
                     </div>
                     <div class="preview-content">
                         ${createTemplate(article).outerHTML}
@@ -377,8 +377,8 @@
         tempDiv.style.cssText = `
         position: fixed;
         left: -9999px;
-        width: 1245px;
-        height: 1660px;
+        width: 1080px;
+        height: 1440px;
         visibility: visible !important;
     `;
 
@@ -392,10 +392,10 @@
             const canvas = await html2canvas(clone.firstElementChild, {
                 scale: 1,
                 useCORS: true,
-                width: 1245,       // 明确指定画布尺寸
-                height: 1660,
-                windowWidth: 1245, // 新增窗口尺寸
-                windowHeight: 1660,
+                width: 1080,       // 明确指定画布尺寸
+                height: 1440,
+                windowWidth: 1080, // 新增窗口尺寸
+                windowHeight: 1440,
                 logging: false
             });
 

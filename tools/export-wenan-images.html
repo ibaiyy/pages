@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>图片文案生成器</title>
+    <title>文案图片导出</title>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <!--        <script src="./../js/xlsx.full.min.js"></script>-->
@@ -21,7 +21,7 @@
 
         body {
             padding: 20px;
-            font-family: Arial, sans-serif;
+            font-family: sans-serif,fantasy,Arial;
             max-width: 80%;
             margin: 0 auto;
             background: white;
@@ -168,10 +168,10 @@
     </style>
 </head>
 <body>
-<h1>📱 生成器</h1>
+<h1>图片导出</h1>
 
 <div class="config-panel">
-    <h3>边距设置 (像素)</h3>
+    <h3>边距</h3>
     <div class="margin-inputs">
         <input type="number" id="top" placeholder="上边距 (默认100)" min="0">
         <input type="number" id="bottom" placeholder="下边距 (默认60)" min="0">
@@ -201,20 +201,18 @@
         <button onclick="setFontSize('medium')" class="btn-default btn-danger">中号</button>
         <button onclick="setFontSize('large')" class="btn-primary">大号</button>
     </div>
-
-    <h3 style="margin-top:15px">叠加图片</h3>
-    <div class="color-controls">
-        <button onclick="document.getElementById('overlayImage').click()" class="btn-default">选择图片</button>
-        <input type="file" id="overlayImage" accept="image/*" hidden>
-    </div>
 </div>
 
 <div class="upload-box">
     <p>拖放Excel文件或
-        <button onclick="document.getElementById('file').click()" class="btn-default">选择文件</button>
-        <button onclick="downloadAll()" id="batchDownload" class="btn-primary">全部下载</button>
+        <button onclick="document.getElementById('file').click()" class="btn-default">选择Excel</button>
+        <button onclick="document.getElementById('overlayImage').click()" class="btn-default btn-danger">选择图片</button>
     </p>
     <input type="file" id="file" accept=".xlsx,.xls" hidden>
+    <input type="file" id="overlayImage" accept="image/*" hidden>
+    <p>
+        <button onclick="downloadAll()" id="batchDownload" class="btn-primary">全部下载</button>
+    </p>
 </div>
 
 <div class="previews" id="previews"></div>

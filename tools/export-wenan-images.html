@@ -36,14 +36,14 @@
 
         .margin-inputs {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 15px;
             margin: 15px 0;
         }
 
         .size-controls {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 15px;
             margin: 15px 0;
         }
@@ -52,7 +52,7 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            width: 100%;
+            width: 90%;
         }
 
         .upload-box {
@@ -174,34 +174,40 @@
     <h3>边距设置 (像素)</h3>
     <div class="margin-inputs">
         <input type="number" id="top" placeholder="上边距 (默认100)" min="0">
-        <input type="number" id="right" placeholder="右边距 (默认60)" min="0">
         <input type="number" id="bottom" placeholder="下边距 (默认60)" min="0">
         <input type="number" id="left" placeholder="左边距 (默认60)" min="0">
+        <input type="number" id="right" placeholder="右边距 (默认60)" min="0">
+        <button onclick="applySettings()" class="btn-default btn-success">应用设置</button>
     </div>
-    <button onclick="applySettings()" class="btn-default">应用设置</button>
-    <button onclick="downloadAll()" id="batchDownload" class="btn-primary">全部下载</button>
 
     <h3 style="margin-top:15px">配色方案</h3>
     <div class="color-controls">
-        <button onclick="document.getElementById('bgColor').click()" class="btn-default">背景颜色</button>
-        <button onclick="document.getElementById('textColor').click()" class="btn-default">文字颜色</button>
-        <button onclick="document.getElementById('borderColor').click()" class="btn-default">边框颜色</button>
+        <button onclick="document.getElementById('bgColor').click()" class="btn-default btn-success">背景</button>
+        <button onclick="document.getElementById('textColor').click()" class="btn-default btn-danger">文字</button>
+        <button onclick="document.getElementById('borderColor').click()" class="btn-primary">边框</button>
 
         <input type="color" id="bgColor" hidden>
         <input type="color" id="textColor" hidden>
         <input type="color" id="borderColor" hidden>
     </div>
 
-    <h3>文字尺寸设置 (px)</h3>
+    <h3>文字大小</h3>
     <div class="size-controls">
         <input type="number" id="titleSize" placeholder="标题 (默认66)" min="20">
         <input type="number" id="contentSize" placeholder="正文 (默认60)" min="20">
         <input type="number" id="authorSize" placeholder="作者 (默认56)" min="20">
+
+        <button onclick="setFontSize('default')" class="btn-default btn-success">默认</button>
+        <button onclick="setFontSize('medium')" class="btn-default btn-danger">中号</button>
+        <button onclick="setFontSize('large')" class="btn-primary">大号</button>
     </div>
 </div>
 
 <div class="upload-box">
-    <p>拖放Excel文件或 <button onclick="document.getElementById('file').click()" class="btn-default">选择文件</button></p>
+    <p>拖放Excel文件或
+        <button onclick="document.getElementById('file').click()" class="btn-default">选择文件</button>
+        <button onclick="downloadAll()" id="batchDownload" class="btn-primary">全部下载</button>
+    </p>
     <input type="file" id="file" accept=".xlsx,.xls" hidden>
 </div>
 
@@ -275,6 +281,24 @@
         });
     });
 
+    function setFontSize(type) {
+        const presets = {
+            'default': [66, 60, 56],
+            'medium': [72, 66, 62],
+            'large': [80, 72, 68]
+        };
+
+        const [title, content, author] = presets[type];
+
+        document.getElementById('titleSize').value = title;
+        document.getElementById('contentSize').value = content;
+        document.getElementById('authorSize').value = author;
+
+        // 触发样式更新
+        document.querySelectorAll('.size-controls input').forEach(input => {
+            input.dispatchEvent(new Event('change'));
+        });
+    }
 
     async function handleFile() {
         const file = document.getElementById('file').files[0];

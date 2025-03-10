@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片合并工具</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* 整体容器样式 */
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 文字选项区域样式 */
+        #text-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #text-options label {
+            font-weight: bold;
+        }
+
+        #text-options input[type="text"],
+        #text-options input[type="color"],
+        #text-options select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* 文件输入框样式 */
+        #file-input {
+            margin-bottom: 20px;
+        }
+
+        /* 按钮样式 */
+        #preview-button,
+        #export-button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        #preview-button:hover,
+        #export-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 图片容器样式 */
+        #image-container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            aspect-ratio: 1080 / 1440;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .image-part {
+            width: 50%;
+            height: 50%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            #text-options {
+                flex-direction: column;
+            }
+
+            #image-container {
+                aspect-ratio: auto;
+            }
+
+            .image-part {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1080 / 720;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <!-- 原有的 4 组文字输入及设置区域 -->
+    <div id="text-options">
+        <label for="text1">文字 1:</label>
+        <input type="text" id="text1">
+        <label for="position1">位置 1:</label>
+        <select id="position1">
+            <option value="center">居中</option>
+            <option value="top-left">左上角</option>
+            <option value="top-right">右上角</option>
+            <option value="bottom-right">右下角</option>
+            <option value="bottom-left">左下角</option>
+        </select>
+        <label for="color1">颜色 1:</label>
+        <input type="color" id="color1" value="#ffffff">
+        <label for="size1">大小 1:</label>
+        <select id="size1">
+            <option value="16px">16px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+        </select>
+        <label for="bg-color1">背景色 1:</label>
+        <input type="color" id="bg-color1" value="#000000">
+    </div>
+    <div id="text-options">
+        <label for="text2">文字 2:</label>
+        <input type="text" id="text2">
+        <label for="position2">位置 2:</label>
+        <select id="position2">
+            <option value="center">居中</option>
+            <option value="top-left">左上角</option>
+            <option value="top-right">右上角</option>
+            <option value="bottom-right">右下角</option>
+            <option value="bottom-left">左下角</option>
+        </select>
+        <label for="color2">颜色 2:</label>
+        <input type="color" id="color2" value="#ffffff">
+        <label for="size2">大小 2:</label>
+        <select id="size2">
+            <option value="16px">16px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+        </select>
+        <label for="bg-color2">背景色 2:</label>
+        <input type="color" id="bg-color2" value="#000000">
+    </div>
+    <div id="text-options">
+        <label for="text3">文字 3:</label>
+        <input type="text" id="text3">
+        <label for="position3">位置 3:</label>
+        <select id="position3">
+            <option value="center">居中</option>
+            <option value="top-left">左上角</option>
+            <option value="top-right">右上角</option>
+            <option value="bottom-right">右下角</option>
+            <option value="bottom-left">左下角</option>
+        </select>
+        <label for="color3">颜色 3:</label>
+        <input type="color" id="color3" value="#ffffff">
+        <label for="size3">大小 3:</label>
+        <select id="size3">
+            <option value="16px">16px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+        </select>
+        <label for="bg-color3">背景色 3:</label>
+        <input type="color" id="bg-color3" value="#000000">
+    </div>
+    <div id="text-options">
+        <label for="text4">文字 4:</label>
+        <input type="text" id="text4">
+        <label for="position4">位置 4:</label>
+        <select id="position4">
+            <option value="center">居中</option>
+            <option value="top-left">左上角</option>
+            <option value="top-right">右上角</option>
+            <option value="bottom-right">右下角</option>
+            <option value="bottom-left">左下角</option>
+        </select>
+        <label for="color4">颜色 4:</label>
+        <input type="color" id="color4" value="#ffffff">
+        <label for="size4">大小 4:</label>
+        <select id="size4">
+            <option value="16px">16px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+        </select>
+        <label for="bg-color4">背景色 4:</label>
+        <input type="color" id="bg-color4" value="#000000">
+    </div>
+    <!-- 新增的 4 组文字输入区域，用于放置在图片下方四分之一处 -->
+    <div id="text-options">
+        <label for="text-below1">下方文字 1:</label>
+        <input type="text" id="text-below1">
+        <label for="color-below1">颜色 1:</label>
+        <input type="color" id="color-below1" value="#ffffff">
+        <label for="size-below1">大小 1:</label>
+        <select id="size-below1">
+            <option value="16px">16px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+        </select>
+    </div>
+    <div id="text-options">
+        <label for="text-below2">下方文字 2:</label>
+        <input type="text" id="text-below2">
+        <label for="color-below2">颜色 2:</label>
+        <input type="color" id="color-below2" value="#ffffff">
+        <label for="size-below2">大小 2:</label>
+        <select id="size-below2">
+            <option value="16px">16px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+        </select>
+    </div>
+    <div id="text-options">
+        <label for="text-below3">下方文字 3:</label>
+        <input type="text" id="text-below3">
+        <label for="color-below3">颜色 3:</label>
+        <input type="color" id="color-below3" value="#ffffff">
+        <label for="size-below3">大小 3:</label>
+        <select id="size-below3">
+            <option value="16px">16px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+        </select>
+    </div>
+    <div id="text-options">
+        <label for="text-below4">下方文字 4:</label>
+        <input type="text" id="text-below4">
+        <label for="color-below4">颜色 4:</label>
+        <input type="color" id="color-below4" value="#ffffff">
+        <label for="size-below4">大小 4:</label>
+        <select id="size-below4">
+            <option value="16px">16px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+        </select>
+    </div>
+    <!-- 新增的输入框，用于输入合并后图片中间的文字 -->
+    <div id="text-options">
+        <label for="text-center">中间文字:</label>
+        <input type="text" id="text-center">
+        <label for="color-center">颜色:</label>
+        <input type="color" id="color-center" value="#ffffff">
+        <label for="size-center">大小:</label>
+        <select id="size-center">
+            <option value="16px">16px</option>
+            <option value="20px">20px</option>
+            <option value="24px">24px</option>
+            <option value="28px">28px</option>
+        </select>
+        <label for="bg-color-center">背景色:</label>
+        <input type="color" id="bg-color-center" value="#000000">
+    </div>
+    <input type="file" id="file-input" multiple accept="image/*">
+    <button id="preview-button">预览</button>
+    <button id="export-button">导出</button>
+    <div id="image-container">
+        <div class="image-part" id="part1"></div>
+        <div class="image-part" id="part2"></div>
+        <div class="image-part" id="part3"></div>
+        <div class="image-part" id="part4"></div>
+    </div>
+    <canvas id="merged-canvas" style="display: none;"></canvas>
+</div>
+
+<script>
+    const fileInput = document.getElementById('file-input');
+    const previewButton = document.getElementById('preview-button');
+    const exportButton = document.getElementById('export-button');
+    const imageContainer = document.getElementById('image-container');
+    const canvas = document.getElementById('merged-canvas');
+    const ctx = canvas.getContext('2d');
+    const parts = [
+        document.getElementById('part1'),
+        document.getElementById('part2'),
+        document.getElementById('part3'),
+        document.getElementById('part4')
+    ];
+    const textInputs = [
+        document.getElementById('text1'),
+        document.getElementById('text2'),
+        document.getElementById('text3'),
+        document.getElementById('text4')
+    ];
+    const positionSelects = [
+        document.getElementById('position1'),
+        document.getElementById('position2'),
+        document.getElementById('position3'),
+        document.getElementById('position4')
+    ];
+    const colorInputs = [
+        document.getElementById('color1'),
+        document.getElementById('color2'),
+        document.getElementById('color3'),
+        document.getElementById('color4')
+    ];
+    const sizeSelects = [
+        document.getElementById('size1'),
+        document.getElementById('size2'),
+        document.getElementById('size3'),
+        document.getElementById('size4')
+    ];
+    const bgColorInputs = [
+        document.getElementById('bg-color1'),
+        document.getElementById('bg-color2'),
+        document.getElementById('bg-color3'),
+        document.getElementById('bg-color4')
+    ];
+    const textBelowInputs = [
+        document.getElementById('text-below1'),
+        document.getElementById('text-below2'),
+        document.getElementById('text-below3'),
+        document.getElementById('text-below4')
+    ];
+    const colorBelowInputs = [
+        document.getElementById('color-below1'),
+        document.getElementById('color-below2'),
+        document.getElementById('color-below3'),
+        document.getElementById('color-below4')
+    ];
+    const sizeBelowSelects = [
+        document.getElementById('size-below1'),
+        document.getElementById('size-below2'),
+        document.getElementById('size-below3'),
+        document.getElementById('size-below4')
+    ];
+    const textCenterInput = document.getElementById('text-center');
+    const colorCenterInput = document.getElementById('color-center');
+    const sizeCenterSelect = document.getElementById('size-center');
+    const bgColorCenterInput = document.getElementById('bg-color-center');
+
+    fileInput.addEventListener('change', function (e) {
+        const files = e.target.files;
+        for (let i = 0; i < Math.min(files.length, 4); i++) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                parts[i].style.backgroundImage = `url(${event.target.result})`;
+            };
+            reader.readAsDataURL(files[i]);
+        }
+    });
+
+    function drawOnCanvas(callback) {
+        canvas.width = 1080;
+        canvas.height = 1440;
+        let drawCount = 0;
+
+        for (let i = 0; i < 4; i++) {
+            const img = new Image();
+            const bgImage = getComputedStyle(parts[i]).backgroundImage;
+            const url = bgImage.slice(5, -2);
+            img.src = url;
+
+            img.onload = function () {
+                const partWidth = 540;
+                const partHeight = 720;
+                const x = (i % 2) * partWidth;
+                const y = Math.floor(i / 2) * partHeight;
+
+                let scale = Math.max(partWidth / img.width, partHeight / img.height);
+                let scaledWidth = img.width * scale;
+                let scaledHeight = img.height * scale;
+
+                let sx = (scaledWidth - partWidth) / (2 * scale);
+                let sy = (scaledHeight - partHeight) / (2 * scale);
+
+                ctx.drawImage(img, sx, sy, partWidth / scale, partHeight / scale, x, y, partWidth, partHeight);
+
+                const text = textInputs[i].value;
+                if (text) {
+                    const position = positionSelects[i].value;
+                    const color = colorInputs[i].value;
+                    const size = sizeSelects[i].value;
+                    const bgColor = bgColorInputs[i].value;
+
+                    ctx.font = `${size} Arial`;
+                    const textWidth = ctx.measureText(text).width;
+                    const textHeight = parseInt(size);
+
+                    let textX, textY;
+                    const margin = 20;
+
+                    switch (position) {
+                        case 'center':
+                            textX = x + (partWidth - textWidth) / 2;
+                            textY = y + (partHeight + textHeight) / 2;
+                            break;
+                        case 'top-left':
+                            textX = x + margin;
+                            textY = y + margin + textHeight;
+                            break;
+                        case 'top-right':
+                            textX = x + partWidth - textWidth - margin;
+                            textY = y + margin + textHeight;
+                            break;
+                        case 'bottom-right':
+                            textX = x + partWidth - textWidth - margin;
+                            textY = y + partHeight - margin;
+                            break;
+                        case 'bottom-left':
+                            textX = x + margin;
+                            textY = y + partHeight - margin;
+                            break;
+                    }
+
+                    ctx.fillStyle = `rgba(${parseInt(bgColor.slice(1, 3), 16)}, ${parseInt(bgColor.slice(3, 5), 16)}, ${parseInt(bgColor.slice(5, 7), 16)}, 0.5)`;
+                    ctx.fillRect(textX - 5, textY - textHeight - 5, textWidth + 10, textHeight + 10);
+                    ctx.fillStyle = color;
+                    ctx.fillText(text, textX, textY);
+                }
+
+                const textBelow = textBelowInputs[i].value;
+                if (textBelow) {
+                    const colorBelow = colorBelowInputs[i].value;
+                    const sizeBelow = sizeBelowSelects[i].value;
+
+                    ctx.font = `${sizeBelow} Arial`;
+                    const textBelowWidth = ctx.measureText(textBelow).width;
+                    const textBelowHeight = parseInt(sizeBelow);
+
+                    const textBelowX = x + (partWidth - textBelowWidth) / 2;
+                    const textBelowY = y + partHeight * 0.75 + textBelowHeight;
+
+                    ctx.fillStyle = colorBelow;
+                    ctx.fillText(textBelow, textBelowX, textBelowY);
+                }
+
+                drawCount++;
+                if (drawCount === 4) {
+                    const textCenter = textCenterInput.value;
+                    if (textCenter) {
+                        const colorCenter = colorCenterInput.value;
+                        const sizeCenter = sizeCenterSelect.value;
+                        const bgColorCenter = bgColorCenterInput.value;
+
+                        ctx.font = `${sizeCenter} Arial`;
+                        const textCenterWidth = ctx.measureText(textCenter).width;
+                        const textCenterHeight = parseInt(sizeCenter);
+
+                        const textCenterX = (canvas.width - textCenterWidth) / 2;
+                        const textCenterY = (canvas.height + textCenterHeight) / 2;
+
+                        // 设置圆角矩形背景
+                        const borderRadius = 10; // 圆角半径
+                        const padding = 5;
+                        const rectX = textCenterX - padding;
+                        const rectY = textCenterY - textCenterHeight - padding;
+                        const rectWidth = textCenterWidth + padding * 2;
+                        const rectHeight = textCenterHeight + padding * 2;
+
+                        ctx.fillStyle = `rgba(${parseInt(bgColorCenter.slice(1, 3), 16)}, ${parseInt(bgColorCenter.slice(3, 5), 16)}, ${parseInt(bgColorCenter.slice(5, 7), 16)}, 0.5)`;
+                        ctx.beginPath();
+                        ctx.moveTo(rectX + borderRadius, rectY);
+                        ctx.lineTo(rectX + rectWidth - borderRadius, rectY);
+                        ctx.quadraticCurveTo(rectX + rectWidth, rectY, rectX + rectWidth, rectY + borderRadius);
+                        ctx.lineTo(rectX + rectWidth, rectY + rectHeight - borderRadius);
+                        ctx.quadraticCurveTo(rectX + rectWidth, rectY + rectHeight, rectX + rectWidth - borderRadius, rectY + rectHeight);
+                        ctx.lineTo(rectX + borderRadius, rectY + rectHeight);
+                        ctx.quadraticCurveTo(rectX, rectY + rectHeight, rectX, rectY + rectHeight - borderRadius);
+                        ctx.lineTo(rectX, rectY + borderRadius);
+                        ctx.quadraticCurveTo(rectX, rectY, rectX + borderRadius, rectY);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        ctx.fillStyle = colorCenter;
+                        ctx.fillText(textCenter, textCenterX, textCenterY);
+                    }
+                    callback();
+                }
+            };
+        }
+    }
+
+    previewButton.addEventListener('click', function () {
+        drawOnCanvas(() => {
+            const previewWindow = window.open('', '_blank');
+            previewWindow.document.write(`<img src="${canvas.toDataURL('image/jpeg')}" alt="Preview">`);
+        });
+    });
+
+    exportButton.addEventListener('click', function () {
+        drawOnCanvas(() => {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/jpeg');
+            link.download = 'merged_image.jpg';
+            link.click();
+        });
+    });
+</script>
+</body>
+
+</html>

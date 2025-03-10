@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./../css/button.css" rel="stylesheet" type="text/css">
     <title>图片合并工具</title>
     <style>
         /* 全局样式 */
@@ -18,7 +19,7 @@
         .container {
             max-width: 1080px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 42px;
         }
 
         /* 文字选项区域样式 */
@@ -26,7 +27,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 42px;
         }
 
         #text-options label {
@@ -44,25 +45,10 @@
 
         /* 文件输入框样式 */
         #file-input {
-            margin-bottom: 20px;
-        }
-
-        /* 按钮样式 */
-        #preview-button,
-        #export-button {
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
-        }
-
-        #preview-button:hover,
-        #export-button:hover {
-            background-color: #0056b3;
+            margin-bottom: 42px;
+            background: linear-gradient(135deg,
+            hsl(180, 63%, 55%) 0%,
+            hsl(166, 53%, 56%) 100%);
         }
 
         /* 图片容器样式 */
@@ -118,20 +104,20 @@
         <input type="text" id="text1">
         <label for="position1">位置 1:</label>
         <select id="position1">
-            <option value="center">居中</option>
+            <option value="bottom-left">左下角</option>
             <option value="top-left">左上角</option>
             <option value="top-right">右上角</option>
             <option value="bottom-right">右下角</option>
-            <option value="bottom-left">左下角</option>
+            <option value="center">居中</option>
         </select>
         <label for="color1">颜色 1:</label>
-        <input type="color" id="color1" value="#ffffff">
+        <input type="color" id="color1" value="#FF7F24">
         <label for="size1">大小 1:</label>
         <select id="size1">
-            <option value="16px">16px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="28px">28px</option>
+            <option value="30px">30px</option>
+            <option value="42px">42px</option>
+            <option value="52px">52px</option>
+            <option value="58px">58px</option>
         </select>
         <label for="bg-color1">背景色 1:</label>
         <input type="color" id="bg-color1" value="#000000">
@@ -141,20 +127,20 @@
         <input type="text" id="text2">
         <label for="position2">位置 2:</label>
         <select id="position2">
-            <option value="center">居中</option>
+            <option value="bottom-right">右下角</option>
             <option value="top-left">左上角</option>
             <option value="top-right">右上角</option>
-            <option value="bottom-right">右下角</option>
             <option value="bottom-left">左下角</option>
+            <option value="center">居中</option>
         </select>
         <label for="color2">颜色 2:</label>
-        <input type="color" id="color2" value="#ffffff">
+        <input type="color" id="color2" value="#FF7F24">
         <label for="size2">大小 2:</label>
         <select id="size2">
-            <option value="16px">16px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="28px">28px</option>
+            <option value="30px">30px</option>
+            <option value="42px">42px</option>
+            <option value="52px">52px</option>
+            <option value="58px">58px</option>
         </select>
         <label for="bg-color2">背景色 2:</label>
         <input type="color" id="bg-color2" value="#000000">
@@ -164,20 +150,20 @@
         <input type="text" id="text3">
         <label for="position3">位置 3:</label>
         <select id="position3">
-            <option value="center">居中</option>
+            <option value="bottom-left">左下角</option>
             <option value="top-left">左上角</option>
             <option value="top-right">右上角</option>
             <option value="bottom-right">右下角</option>
-            <option value="bottom-left">左下角</option>
+            <option value="center">居中</option>
         </select>
         <label for="color3">颜色 3:</label>
-        <input type="color" id="color3" value="#ffffff">
+        <input type="color" id="color3" value="#FF7F24">
         <label for="size3">大小 3:</label>
         <select id="size3">
-            <option value="16px">16px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="28px">28px</option>
+            <option value="30px">30px</option>
+            <option value="42px">42px</option>
+            <option value="52px">52px</option>
+            <option value="58px">58px</option>
         </select>
         <label for="bg-color3">背景色 3:</label>
         <input type="color" id="bg-color3" value="#000000">
@@ -187,20 +173,20 @@
         <input type="text" id="text4">
         <label for="position4">位置 4:</label>
         <select id="position4">
-            <option value="center">居中</option>
+            <option value="bottom-right">右下角</option>
             <option value="top-left">左上角</option>
             <option value="top-right">右上角</option>
-            <option value="bottom-right">右下角</option>
             <option value="bottom-left">左下角</option>
+            <option value="center">居中</option>
         </select>
         <label for="color4">颜色 4:</label>
-        <input type="color" id="color4" value="#ffffff">
+        <input type="color" id="color4" value="#FF7F24">
         <label for="size4">大小 4:</label>
         <select id="size4">
-            <option value="16px">16px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="28px">28px</option>
+            <option value="30px">30px</option>
+            <option value="42px">42px</option>
+            <option value="52px">52px</option>
+            <option value="58px">58px</option>
         </select>
         <label for="bg-color4">背景色 4:</label>
         <input type="color" id="bg-color4" value="#000000">
@@ -213,10 +199,10 @@
         <input type="color" id="color-below1" value="#ffffff">
         <label for="size-below1">大小 1:</label>
         <select id="size-below1">
-            <option value="16px">16px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="28px">28px</option>
+            <option value="30px">28px</option>
+            <option value="42px">42px</option>
+            <option value="52px">52px</option>
+            <option value="58px">58px</option>
         </select>
     </div>
     <div id="text-options">
@@ -226,10 +212,10 @@
         <input type="color" id="color-below2" value="#ffffff">
         <label for="size-below2">大小 2:</label>
         <select id="size-below2">
-            <option value="16px">16px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="28px">28px</option>
+            <option value="30px">28px</option>
+            <option value="42px">42px</option>
+            <option value="52px">52px</option>
+            <option value="58px">58px</option>
         </select>
     </div>
     <div id="text-options">
@@ -239,10 +225,10 @@
         <input type="color" id="color-below3" value="#ffffff">
         <label for="size-below3">大小 3:</label>
         <select id="size-below3">
-            <option value="16px">16px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="28px">28px</option>
+            <option value="30px">28px</option>
+            <option value="42px">42px</option>
+            <option value="52px">52px</option>
+            <option value="58px">58px</option>
         </select>
     </div>
     <div id="text-options">
@@ -252,10 +238,10 @@
         <input type="color" id="color-below4" value="#ffffff">
         <label for="size-below4">大小 4:</label>
         <select id="size-below4">
-            <option value="16px">16px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="28px">28px</option>
+            <option value="30px">28px</option>
+            <option value="42px">42px</option>
+            <option value="52px">52px</option>
+            <option value="58px">58px</option>
         </select>
     </div>
     <!-- 新增的输入框，用于输入合并后图片中间的文字 -->
@@ -263,20 +249,20 @@
         <label for="text-center">中间文字:</label>
         <input type="text" id="text-center">
         <label for="color-center">颜色:</label>
-        <input type="color" id="color-center" value="#ffffff">
+        <input type="color" id="color-center" value="#FF7F24">
         <label for="size-center">大小:</label>
         <select id="size-center">
-            <option value="16px">16px</option>
-            <option value="20px">20px</option>
-            <option value="24px">24px</option>
-            <option value="28px">28px</option>
+            <option value="58px">58px</option>
+            <option value="30px">68px</option>
+            <option value="42px">78px</option>
+            <option value="52px">88px</option>
         </select>
         <label for="bg-color-center">背景色:</label>
         <input type="color" id="bg-color-center" value="#000000">
     </div>
     <input type="file" id="file-input" multiple accept="image/*">
-    <button id="preview-button">预览</button>
-    <button id="export-button">导出</button>
+    <button id="preview-button" class="btn-default btn-primary">预览</button>
+    <button id="export-button" class="btn-default btn-danger">导出</button>
     <div id="image-container">
         <div class="image-part" id="part1"></div>
         <div class="image-part" id="part2"></div>

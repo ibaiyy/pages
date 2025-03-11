@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片容器生成与导出</title>
+    <link href="./../css/button.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<!--    <script src="./../js/xlsx.full.min.js"></script>-->
+<!--    <script src="./../js/html2canvas.min.js"></script>-->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            position: relative;
+            margin: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            /* 让容器宽度在手机端等小屏幕自适应 */
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        .image-box {
+            width: 100%;
+            height: 75%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .text1 {
+            position: absolute;
+            bottom: 25%;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .text2 {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: var(--padding);
+            word-wrap: break-word;
+            white-space: normal;
+            box-sizing: border-box;
+            max-width: 100%;
+            font-size: 16px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="file"],
+        input[type="color"],
+        input[type="number"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* 媒体查询，针对小屏幕设备（如手机） */
+        @media (max-width: 767px) {
+            .input-group {
+                flex-direction: column;
+            }
+
+            .input-item {
+                min-width: auto;
+            }
+
+            .container {
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<h1 style="text-align: center; color: #333;">图片+说明合并</h1>
+<div class="input-group">
+    <div class="input-item">
+        <label for="excelInput">①Excel文件(<a href="../templates/export-images3-template.xlsx">模板</a>)</label>
+        <input type="file" id="excelInput" accept=".xlsx,.xls">
+    </div>
+    <div class="input-item">
+        <label for="imageInput">②选择图片：</label>
+        <input type="file" id="imageInput" multiple>
+    </div>
+    <div class="input-item">
+        <label for="resolutionSelect">③分辨率：</label>
+        <select id="resolutionSelect">
+            <option value="3:4">3:4 (1080*1440)</option>
+            <option value="1:1">1:1 (1080*1080)</option>
+        </select>
+    </div>
+
+    <div class="input-item">
+        <label for="bgColorInput">背景颜色：</label>
+        <input type="color" id="bgColorInput" value="#ffffff">
+    </div>
+    <div class="input-item">
+        <label for="paddingInput">字段2 边距(上下&左右)</label>
+        <input type="text" id="paddingInput" value="10px 20px">
+    </div>
+</div>
+<div class="input-group">
+
+</div>
+<div class="input-group">
+    <div class="input-item">
+        <label for="text1SizeInput">字段 1 文字大小：</label>
+        <input type="number" id="text1SizeInput" value="18">
+    </div>
+    <div class="input-item">
+        <label for="text1ColorInput">字段 1 文字颜色：</label>
+        <input type="color" id="text1ColorInput" value="#000000">
+    </div>
+    <div class="input-item">
+        <label for="text2SizeInput">字段 2 文字大小：</label>
+        <input type="number" id="text2SizeInput" value="16">
+    </div>
+    <div class="input-item">
+        <label for="text2ColorInput">字段 2 文字颜色：</label>
+        <input type="color" id="text2ColorInput" value="#000000">
+    </div>
+</div>
+<button id="exportButton" class="btn-default btn-danger">导出</button>
+<div id="containerWrapper"></div>
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const excelInput = document.getElementById('excelInput');
+    const resolutionSelect = document.getElementById('resolutionSelect');
+    const bgColorInput = document.getElementById('bgColorInput');
+    const paddingInput = document.getElementById('paddingInput');
+    const text1SizeInput = document.getElementById('text1SizeInput');
+    const text1ColorInput = document.getElementById('text1ColorInput');
+    const text2SizeInput = document.getElementById('text2SizeInput');
+    const text2ColorInput = document.getElementById('text2ColorInput');
+    const containerWrapper = document.getElementById('containerWrapper');
+    const exportButton = document.getElementById('exportButton');
+
+    let excelData = [];
+    let imageFiles = [];
+
+    // 处理图片选择
+    imageInput.addEventListener('change', async (e) => {
+        imageFiles = e.target.files;
+        await regenerateContainers();
+    });
+
+    // 处理 Excel 文件选择
+    excelInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            try {
+                excelData = await processExcel(file);
+                await regenerateContainers();
+            } catch (error) {
+                console.error('读取 Excel 文件时出错:', error);
+            }
+        }
+    });
+
+    // 导出图片
+    exportButton.addEventListener('click', async () => {
+        const containers = containerWrapper.querySelectorAll('.container');
+        containers.forEach(async (container, index) => {
+            const canvas = await html2canvas(container);
+            const imgData = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = imgData;
+            a.download = `container_${index + 1}.png`;
+            a.click();
+        });
+    });
+
+    // 监听文字大小和颜色输入框的变化，实时更新样式
+    text1SizeInput.addEventListener('input', updateTextStyles);
+    text1ColorInput.addEventListener('input', updateTextStyles);
+    text2SizeInput.addEventListener('input', updateTextStyles);
+    text2ColorInput.addEventListener('input', updateTextStyles);
+
+    // 监听字段 2 边距输入框的变化，实时更新样式
+    paddingInput.addEventListener('input', updatePadding);
+
+    // 监听分辨率选择框的变化，重新生成容器
+    resolutionSelect.addEventListener('change', regenerateContainers);
+
+    function updateTextStyles() {
+        const text1Elements = containerWrapper.querySelectorAll('.text1');
+        const text2Elements = containerWrapper.querySelectorAll('.text2');
+
+        text1Elements.forEach((element) => {
+            element.style.fontSize = `${text1SizeInput.value}px`;
+            element.style.color = text1ColorInput.value;
+        });
+
+        text2Elements.forEach((element) => {
+            element.style.fontSize = `${text2SizeInput.value}px`;
+            element.style.color = text2ColorInput.value;
+        });
+    }
+
+    function updatePadding() {
+        const text2Elements = containerWrapper.querySelectorAll('.text2');
+        text2Elements.forEach((element) => {
+            element.style.setProperty('--padding', paddingInput.value);
+        });
+    }
+
+    async function regenerateContainers() {
+        containerWrapper.innerHTML = '';
+        for (let i = 0; i < imageFiles.length; i++) {
+            const file = imageFiles[i];
+            const imgUrl = URL.createObjectURL(file);
+            const container = createContainer(imgUrl, i < excelData.length ? excelData[i]['字段1'] : '', i < excelData.length ? excelData[i]['字段2'] : '');
+            containerWrapper.appendChild(container);
+        }
+    }
+
+    // 创建容器
+    function createContainer(imgUrl, text1, text2) {
+        const container = document.createElement('div');
+        container.className = 'container';
+        container.style.backgroundColor = bgColorInput.value;
+
+        const resolution = resolutionSelect.value.split(':');
+        const width = resolution[0] === '3' ? 1080 : 1080;
+        const height = resolution[1] === '4' ? 1440 : 1080;
+        container.style.width = `${width}px`;
+        container.style.height = `${height}px`;
+
+        const imageBox = document.createElement('div');
+        imageBox.className = 'image-box';
+        imageBox.style.backgroundImage = `url(${imgUrl})`;
+        container.appendChild(imageBox);
+
+        const text1Element = document.createElement('div');
+        text1Element.className = 'text1';
+        text1Element.textContent = text1;
+        text1Element.style.fontSize = `${text1SizeInput.value}px`;
+        text1Element.style.color = text1ColorInput.value;
+        container.appendChild(text1Element);
+
+        const text2Element = document.createElement('div');
+        text2Element.className = 'text2';
+        text2Element.style.setProperty('--padding', paddingInput.value);
+        text2Element.textContent = text2;
+        text2Element.style.fontSize = `${text2SizeInput.value}px`;
+        text2Element.style.color = text2ColorInput.value;
+        container.appendChild(text2Element);
+
+        return container;
+    }
+
+    // 处理 Excel 文件
+    function processExcel(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const wb = XLSX.read(data, { type: 'array' });
+                    const ws = wb.Sheets[wb.SheetNames[0]];
+                    const json = XLSX.utils.sheet_to_json(ws);
+                    resolve(json);
+                } catch (error) {
+                    reject(error);
+                }
+            };
+            reader.onerror = () => {
+                reject(new Error('读取文件时出错'));
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    }
+</script>
+</body>
+
+</html>

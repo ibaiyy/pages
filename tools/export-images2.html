@@ -260,6 +260,14 @@
         <label for="bg-color-center">背景色:</label>
         <input type="color" id="bg-color-center" value="#000000">
     </div>
+    <!-- 新增分辨率选择框 -->
+    <div id="text-options">
+        <label for="resolution-select">导出分辨率:</label>
+        <select id="resolution-select">
+            <option value="1080x1440">1080x1440</option>
+            <option value="1080x1080">1080x1080</option>
+        </select>
+    </div>
     <input type="file" id="file-input" multiple accept="image/*">
     <button id="preview-button" class="btn-default btn-primary">预览</button>
     <button id="export-button" class="btn-default btn-danger">导出</button>
@@ -337,6 +345,7 @@
     const colorCenterInput = document.getElementById('color-center');
     const sizeCenterSelect = document.getElementById('size-center');
     const bgColorCenterInput = document.getElementById('bg-color-center');
+    const resolutionSelect = document.getElementById('resolution-select');
 
     fileInput.addEventListener('change', function (e) {
         const files = e.target.files;
@@ -350,8 +359,21 @@
     });
 
     function drawOnCanvas(callback) {
-        canvas.width = 1080;
-        canvas.height = 1440;
+        const selectedResolution = resolutionSelect.value;
+        let width, height;
+        if (selectedResolution === '1080x1440') {
+            width = 1080;
+            height = 1440;
+        } else if (selectedResolution === '1080x1080') {
+            width = 1080;
+            height = 1080;
+        }
+        canvas.width = width;
+        canvas.height = height;
+
+        const partWidth = width / 2;
+        const partHeight = height / 2;
+
         let drawCount = 0;
 
         for (let i = 0; i < 4; i++) {
@@ -361,17 +383,15 @@
             img.src = url;
 
             img.onload = function () {
-                const partWidth = 540;
-                const partHeight = 720;
-                const x = (i % 2) * partWidth;
-                const y = Math.floor(i / 2) * partHeight;
-
                 let scale = Math.max(partWidth / img.width, partHeight / img.height);
                 let scaledWidth = img.width * scale;
                 let scaledHeight = img.height * scale;
 
                 let sx = (scaledWidth - partWidth) / (2 * scale);
                 let sy = (scaledHeight - partHeight) / (2 * scale);
+
+                const x = (i % 2) * partWidth;
+                const y = Math.floor(i / 2) * partHeight;
 
                 ctx.drawImage(img, sx, sy, partWidth / scale, partHeight / scale, x, y, partWidth, partHeight);
 

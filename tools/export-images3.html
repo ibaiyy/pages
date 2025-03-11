@@ -8,8 +8,8 @@
     <link href="./../css/button.css" rel="stylesheet" type="text/css">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-<!--    <script src="./../js/xlsx.full.min.js"></script>-->
-<!--    <script src="./../js/html2canvas.min.js"></script>-->
+    <!--    <script src="./../js/xlsx.full.min.js"></script>-->
+    <!--    <script src="./../js/html2canvas.min.js"></script>-->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -114,7 +114,9 @@
 </head>
 
 <body>
-<h1 style="text-align: center; color: #333;">图片+说明合并</h1>
+<h1 style="text-align: center; color: #333;">图片+说明合并
+    <button id="exportButton" class="btn-default btn-danger">导出</button>
+</h1>
 <div class="input-group">
     <div class="input-item">
         <label for="excelInput">①Excel文件(<a href="../templates/export-images3-template.xlsx">模板</a>)</label>
@@ -127,8 +129,8 @@
     <div class="input-item">
         <label for="resolutionSelect">③分辨率：</label>
         <select id="resolutionSelect">
-            <option value="3:4">3:4 (1080*1440)</option>
             <option value="1:1">1:1 (1080*1080)</option>
+            <option value="3:4">3:4 (1080*1440)</option>
         </select>
     </div>
 
@@ -160,10 +162,6 @@
     <div class="input-item">
         <label for="text2ColorInput">字段 2 文字颜色：</label>
         <input type="color" id="text2ColorInput" value="#000000">
-    </div>
-    <div class="input-item">
-        <label for="text2ColorInput"></label>
-        <button id="exportButton" class="btn-default btn-danger">导出</button>
     </div>
 </div>
 <div id="containerWrapper"></div>
@@ -235,6 +233,8 @@
         text1Elements.forEach((element) => {
             element.style.fontSize = `${text1SizeInput.value}px`;
             element.style.color = text1ColorInput.value;
+            // 添加半透明背景
+            element.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
         });
 
         text2Elements.forEach((element) => {
@@ -282,6 +282,8 @@
         text1Element.textContent = text1;
         text1Element.style.fontSize = `${text1SizeInput.value}px`;
         text1Element.style.color = text1ColorInput.value;
+        // 添加半透明背景
+        text1Element.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
         container.appendChild(text1Element);
 
         const text2Element = document.createElement('div');

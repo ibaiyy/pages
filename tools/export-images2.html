@@ -4,6 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+<!--        <script src="./../js/xlsx.full.min.js"></script>-->
     <link href="./../css/button.css" rel="stylesheet" type="text/css">
     <title>图片合并工具</title>
     <style>
@@ -44,7 +46,7 @@
         }
 
         /* 文件输入框样式 */
-        #file-input {
+        input[type='file']{
             margin-bottom: 42px;
             background: linear-gradient(135deg,
             hsl(180, 63%, 55%) 0%,
@@ -268,7 +270,9 @@
             <option value="1080x1440">3:4 (1080*1440)</option>
         </select>
     </div>
-    <input type="file" id="file-input" multiple accept="image/*">
+    选择图片：<input type="file" id="file-input" multiple accept="image/*">
+    选择Excel(<a href="../templates/export-images2-template.xlsx">模板</a>)：<input type="file" id="excel-input" accept=".xlsx,.xls">
+
     <button id="preview-button" class="btn-default btn-primary">预览</button>
     <button id="export-button" class="btn-default btn-danger">导出</button>
     <div id="image-container">
@@ -282,6 +286,7 @@
 
 <script>
     const fileInput = document.getElementById('file-input');
+    const excelInput = document.getElementById('excel-input');
     const previewButton = document.getElementById('preview-button');
     const exportButton = document.getElementById('export-button');
     const imageContainer = document.getElementById('image-container');
@@ -499,6 +504,37 @@
             };
         }
     }
+
+    excelInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                if (jsonData.length > 0) {
+                    const firstRow = jsonData[0];
+                    textInputs.forEach((input, index) => {
+                        document.getElementById('text1').value = firstRow['文字1'];
+                        document.getElementById('text2').value = firstRow['文字2'];
+                        document.getElementById('text3').value = firstRow['文字3'];
+                        document.getElementById('text4').value = firstRow['文字4'];
+
+                        document.getElementById('text-below1').value = firstRow['下方文字1'];
+                        document.getElementById('text-below2').value = firstRow['下方文字2'];
+                        document.getElementById('text-below3').value = firstRow['下方文字3'];
+                        document.getElementById('text-below4').value = firstRow['下方文字4'];
+
+                        document.getElementById('text-center').value = firstRow['中间文字'];
+                    });
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    });
 
     previewButton.addEventListener('click', function () {
         drawOnCanvas(() => {

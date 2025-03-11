@@ -366,9 +366,11 @@
     let currentMonth = new Date();
 
     function openTool(url,name) {
-        document.querySelector('.iframe-container').style.display = 'flex';
-        document.getElementById('tool-iframe').src = url;
-        document.getElementById('iframe_name_span').innerHTML = name;
+        // document.querySelector('.iframe-container').style.display = 'flex';
+        // document.getElementById('tool-iframe').src = url;
+        // document.getElementById('iframe_name_span').innerHTML = name;
+
+        window.open(url);
 
     }
 

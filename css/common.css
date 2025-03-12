@@ -1,14 +1,15 @@
 button {
-    padding: 3px 6px;
+    padding: 6px;
     border: none;
     border-radius: 6px;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 300;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
     color: white;
+    min-width: 100px;
 }
 
 .btn-default {
@@ -20,7 +21,6 @@ button {
 .btn-default::before {
     content: '';
     position: absolute;
-    top: 0;
     left: -100%;
     width: 200%;
     height: 100%;
@@ -130,3 +130,106 @@ button {
     hsl(354, 70%, 54%) 0%,
     hsl(354, 70%, 44%) 100%);
 }
+
+/**************** 全局样式START ********************/
+:root {
+    --border-color: #e0e0e0;
+    --bg-color: #f8f9fa;
+}
+
+body {
+    padding: 20px;
+    font-family: sans-serif,fantasy,Arial;
+    max-width: 80%;
+    margin: 0 auto;
+    background: white;
+}
+
+.config-panel {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.upload-box {
+    border: 2px dashed #007bff;
+    padding: 30px;
+    text-align: center;
+    border-radius: 8px;
+    margin: 20px 0;
+    background: var(--bg-color);
+}
+
+.row-item2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.row-item3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.row-item4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.row-item5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+}
+.row-item6 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.row-item7 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.row-item8 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.row-item10 {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+}
+
+input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 90%;
+}
+select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 98%;
+}
+
+label{
+    text-align: right;
+}
+/**************** 全局样式END ********************/

@@ -5,19 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>图片容器生成与导出</title>
-    <link href="./../css/button.css" rel="stylesheet" type="text/css">
+    <link href="./../css/common.css" rel="stylesheet" type="text/css">
     <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <!--    <script src="./../js/xlsx.full.min.js"></script>-->
     <!--    <script src="./../js/html2canvas.min.js"></script>-->
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-        }
-
         .container {
             position: relative;
             margin: 20px;
@@ -59,109 +52,62 @@
             font-size: 16px;
             color: #333;
         }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input[type="file"],
-        input[type="color"],
-        input[type="number"],
-        input[type="text"],
-        select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .input-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .input-item {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        /* 媒体查询，针对小屏幕设备（如手机） */
-        @media (max-width: 767px) {
-            .input-group {
-                flex-direction: column;
-            }
-
-            .input-item {
-                min-width: auto;
-            }
-
-            .container {
-                width: 100%;
-                margin: 10px 0;
-            }
-        }
     </style>
 </head>
 
 <body>
-<h1 style="text-align: center; color: #333;">图片+说明合并
-    <button id="exportButton" class="btn-default btn-danger">导出</button>
-</h1>
-<div class="input-group">
-    <div class="input-item">
-        <label for="excelInput">①Excel文件(<a href="../templates/export-images3-template.xlsx">模板</a>)</label>
-        <input type="file" id="excelInput" accept=".xlsx,.xls">
-    </div>
-    <div class="input-item">
-        <label for="imageInput">②选择图片：</label>
-        <input type="file" id="imageInput" multiple accept="image/*">
-    </div>
-    <div class="input-item">
-        <label for="resolutionSelect">③分辨率：</label>
-        <select id="resolutionSelect">
-            <option value="1:1">1:1 (1080*1080)</option>
-            <option value="3:4">3:4 (1080*1440)</option>
-        </select>
-    </div>
+<h2>图片导出</h2>
+<div class="config-panel">
+    <div class="row-item8">
+        <div class="input-item">
+            <label for="bgColorInput">背景颜色</label>
+            <input type="color" id="bgColorInput" value="#ffffff">
+        </div>
+        <div class="input-item">
+            <label for="paddingInput">字段2 边距(上下&左右)</label>
+            <input type="text" id="paddingInput" value="10px 20px">
+        </div>
 
-    <div class="input-item">
-        <label for="bgColorInput">背景颜色：</label>
-        <input type="color" id="bgColorInput" value="#ffffff">
-    </div>
-    <div class="input-item">
-        <label for="paddingInput">字段2 边距(上下&左右)</label>
-        <input type="text" id="paddingInput" value="10px 20px">
+        <div class="input-item">
+            <label for="text1SizeInput">字段 1 文字大小：</label>
+            <input type="number" id="text1SizeInput" value="40">
+        </div>
+        <div class="input-item">
+            <label for="text1ColorInput">字段 1 文字颜色：</label>
+            <input type="color" id="text1ColorInput" value="#ffffff">
+        </div>
+        <div class="input-item">
+            <label for="text2SizeInput">字段 2 文字大小：</label>
+            <input type="number" id="text2SizeInput" value="40">
+        </div>
+        <div class="input-item">
+            <label for="text2ColorInput">字段 2 文字颜色：</label>
+            <input type="color" id="text2ColorInput" value="#000000">
+        </div>
+
+        <div class="input-item">
+            <label for="resolutionSelect">分辨率</label>
+            <select id="resolutionSelect">
+                <option value="1:1">1:1 (1080*1080)</option>
+                <option value="3:4">3:4 (1080*1440)</option>
+            </select>
+        </div>
+
+        <div class="input-item">
+            <button id="exportButton" class="btn-default btn-danger">导出</button>
+        </div>
     </div>
 </div>
-<div class="input-group">
-
-</div>
-<div class="input-group">
-    <div class="input-item">
-        <label for="text1SizeInput">字段 1 文字大小：</label>
-        <input type="number" id="text1SizeInput" value="40">
-    </div>
-    <div class="input-item">
-        <label for="text1ColorInput">字段 1 文字颜色：</label>
-        <input type="color" id="text1ColorInput" value="#ffffff">
-    </div>
-    <div class="input-item">
-        <label for="text2SizeInput">字段 2 文字大小：</label>
-        <input type="number" id="text2SizeInput" value="40">
-    </div>
-    <div class="input-item">
-        <label for="text2ColorInput">字段 2 文字颜色：</label>
-        <input type="color" id="text2ColorInput" value="#000000">
+<div class="upload-box">
+    <div class="row-item2">
+        <div class="input-item">
+            <label for="excelInput">①Excel文件(<a href="../templates/export-images3-template.xlsx">模板</a>)</label>
+            <input type="file" id="excelInput" accept=".xlsx,.xls">
+        </div>
+        <div class="input-item">
+            <label for="imageInput">②选择图片</label>
+            <input type="file" id="imageInput" multiple accept="image/*">
+        </div>
     </div>
 </div>
 <div id="containerWrapper"></div>

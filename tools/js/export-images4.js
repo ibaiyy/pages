@@ -100,12 +100,20 @@ document.getElementById('generate-button').addEventListener('click', function ()
 document.getElementById('export-all-button').addEventListener('click', function () {
     const imageContainer = document.getElementById('image-container');
     const images = imageContainer.getElementsByTagName('img');
-    Array.from(images).forEach((img, index) => {
-        const link = document.createElement('a');
-        link.href = img.src;
-        link.download = `image-${index + 1}.png`;
-        link.click();
-    });
+
+    const downloadImages = async () => {
+        for (let i = 0; i < images.length; i++) {
+            const img = images[i];
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = `image-${i + 1}.png`;
+            link.click();
+            // 等待 500 毫秒后再进行下一次下载
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+    };
+
+    downloadImages();
 });
 
 function exportImage(element, filename) {

@@ -108,6 +108,14 @@
             <label for="imageInput">②选择图片</label>
             <input type="file" id="imageInput" multiple accept="image/*">
         </div>
+        <div class="input-item">
+            <label for="text1Input">字段 1 手动输入</label>
+            <input type="text" id="text1Input">
+        </div>
+        <div class="input-item">
+            <label for="text2Input">字段 2 手动输入</label>
+            <input type="text" id="text2Input">
+        </div>
     </div>
 </div>
 <div id="containerWrapper"></div>
@@ -124,6 +132,8 @@
     const text2ColorInput = document.getElementById('text2ColorInput');
     const containerWrapper = document.getElementById('containerWrapper');
     const exportButton = document.getElementById('exportButton');
+    const text1Input = document.getElementById('text1Input');
+    const text2Input = document.getElementById('text2Input');
 
     let excelData = [];
     let imageFiles = [];
@@ -145,6 +155,14 @@
                 console.error('读取 Excel 文件时出错:', error);
             }
         }
+    });
+
+    // 处理手动输入
+    text1Input.addEventListener('input', async () => {
+        await regenerateContainers();
+    });
+    text2Input.addEventListener('input', async () => {
+        await regenerateContainers();
     });
 
     // 导出图片
@@ -201,7 +219,16 @@
         for (let i = 0; i < imageFiles.length; i++) {
             const file = imageFiles[i];
             const imgUrl = URL.createObjectURL(file);
-            const container = createContainer(imgUrl, i < excelData.length ? excelData[i]['字段1'] : '', i < excelData.length ? excelData[i]['字段2'] : '');
+            let text1 = '';
+            let text2 = '';
+            if (excelData.length > 0 && i < excelData.length) {
+                text1 = excelData[i]['字段1'];
+                text2 = excelData[i]['字段2'];
+            } else {
+                text1 = text1Input.value;
+                text2 = text2Input.value;
+            }
+            const container = createContainer(imgUrl, text1, text2);
             containerWrapper.appendChild(container);
         }
     }

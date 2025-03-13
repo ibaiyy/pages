@@ -43,7 +43,7 @@
             position: absolute;
             bottom: 0;
             width: 100%;
-            text-align: center;
+            text-align: left;
             padding: var(--padding);
             word-wrap: break-word;
             white-space: normal;
@@ -108,13 +108,11 @@
             <label for="imageInput">②选择图片</label>
             <input type="file" id="imageInput" multiple accept="image/*">
         </div>
+    </div>
+    <div>
         <div class="input-item">
-            <label for="text1Input">字段 1 手动输入</label>
-            <input type="text" id="text1Input">
-        </div>
-        <div class="input-item">
-            <label for="text2Input">字段 2 手动输入</label>
-            <input type="text" id="text2Input">
+            <label for="combinedInput">①手动输入</label>
+            <textarea id="combinedInput" placeholder="格式: 字段1-1@字段2-1 # 字段1-2@字段2-2"></textarea>
         </div>
     </div>
 </div>
@@ -132,8 +130,7 @@
     const text2ColorInput = document.getElementById('text2ColorInput');
     const containerWrapper = document.getElementById('containerWrapper');
     const exportButton = document.getElementById('exportButton');
-    const text1Input = document.getElementById('text1Input');
-    const text2Input = document.getElementById('text2Input');
+    const combinedInput = document.getElementById('combinedInput');
 
     let excelData = [];
     let imageFiles = [];
@@ -158,10 +155,7 @@
     });
 
     // 处理手动输入
-    text1Input.addEventListener('input', async () => {
-        await regenerateContainers();
-    });
-    text2Input.addEventListener('input', async () => {
+    combinedInput.addEventListener('input', async () => {
         await regenerateContainers();
     });
 
@@ -216,6 +210,9 @@
 
     async function regenerateContainers() {
         containerWrapper.innerHTML = '';
+        const combinedText = combinedInput.value;
+        const combinedArray = combinedText.split('#');
+
         for (let i = 0; i < imageFiles.length; i++) {
             const file = imageFiles[i];
             const imgUrl = URL.createObjectURL(file);
@@ -224,9 +221,10 @@
             if (excelData.length > 0 && i < excelData.length) {
                 text1 = excelData[i]['字段1'];
                 text2 = excelData[i]['字段2'];
-            } else {
-                text1 = text1Input.value;
-                text2 = text2Input.value;
+            } else if (i < combinedArray.length) {
+                const parts = combinedArray[i].split('@');
+                text1 = parts[0] || '';
+                text2 = parts[1] || '';
             }
             const container = createContainer(imgUrl, text1, text2);
             containerWrapper.appendChild(container);

@@ -66,7 +66,7 @@ document.getElementById('generate-button').addEventListener('click', function ()
             } else {
                 div.style.backgroundColor = bgColor;
             }
-            // div.style.padding = '20px';
+            div.style.padding = '80px';
             div.textContent = sentence;
 
             const imgElement = document.createElement('img');

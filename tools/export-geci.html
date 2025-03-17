@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>歌词海报生成</title>
+    <link href="./../css/common.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+        .main-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .preview-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .config-area {
+            flex: 1;
+            max-width: 400px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="file"], textarea, input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 150px;
+        }
+        .poster-container {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .poster-image {
+            max-width: 400px;
+            max-height: 400px;
+            margin-bottom: 6px;
+            border-radius: 1px;
+        }
+        .lyric-text {
+            font-size: 1.2rem;
+            /*line-height: 1.6;*/
+            margin-bottom: 20px;
+            text-align: left;
+            width: 400px;
+        }
+        .info-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <!-- 左边预览区域 -->
+    <div class="preview-area">
+        <div class="poster-container" id="posterContainer">
+            <img src="" class="poster-image" id="posterImg">
+            <div class="lyric-text" id="lyricDisplay"></div>
+            <div class="info-text">
+                <span></span>
+                <span id="songInfoDisplay"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 右边配置区域 -->
+    <div class="config-area">
+        <div class="input-group">
+            <label>选择图片：</label>
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+        <div class="input-group">
+            <label>歌词输入：</label>
+            <textarea id="lyricInput">
+                在这深夜我抬头仰望
+                你的方向
+                星光闪耀
+                如花绽放
+                你可知道我多渴望
+                像你一样
+            </textarea>
+        </div>
+        <div class="input-group">
+            <label>歌名-作者：</label>
+            <input type="text" id="songInfo" value="天狐·李健">
+        </div>
+        <button onclick="preview()" class="btn-default btn-primary">预览</button>
+        <button onclick="generatePoster()" class="btn-default btn-danger">下载</button>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            document.getElementById('posterImg').src = url;
+        }
+    });
+
+    function preview(){
+        const lyric = document.getElementById('lyricInput').value;
+        const songInfo = document.getElementById('songInfo').value;
+        const lyricDisplay = document.getElementById('lyricDisplay');
+        lyricDisplay.innerHTML = '';
+
+        const lines = lyric.split('\n');
+        lines.forEach(line => {
+            const p = document.createElement('p');
+            p.textContent = line;
+            lyricDisplay.appendChild(p);
+        });
+
+        document.getElementById('songInfoDisplay').textContent = songInfo;
+    }
+
+    function generatePoster() {
+        preview();
+        html2canvas(document.getElementById('posterContainer')).then(canvas => {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = `lyric_poster_${Date.now()}.png`;
+            link.click();
+        });
+    }
+</script>
+</body>
+</html>

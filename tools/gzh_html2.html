@@ -44,18 +44,42 @@
 </div>
 
 <script>
-    const HTML_TEMPLATE = `<div>
-  <div style="border: 1px solid #dbe2ef; padding: 10px; width: 98%; margin: 0 auto;">
-    <span style="background-color: pink; color: white; padding: 2px 5px;">{number}</span>
-    <div style="color:#384259;">
-      {txt}
-   </div>
-  </div>
-  <div style="text-align: center; margin-top: 10px;">
-    <img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/QuIgtW9UfDWNvuuWAUQ7g2FzEQ9cmQ5bBMiaJ2micWQPKXRaEibDDTRAuMbhsv1Wt6Z02NAYRRiawVYnlmlsL0rKvg/0?wx_fmt=jpeg" alt="" style="width: 98%">
-  </div>
-    <hr style="border-style: solid; border-width: 1px 0px 0px; border-color: rgba(0, 0, 0, 0.1); transform-origin: 0px 0px; transform: scale(1,0.5); visibility: visible;">
-  </div>`;
+    const HTML_TEMPLATE = `<section>
+    <section style="margin: 10px auto;">
+        <section style="display: flex;justify-content: center;margin-bottom: 6px;">
+            <section>
+                <section style="display: flex;">
+                    <section>
+                        <section style="background-color: #7dbb91;padding: 8px 20px;box-sizing:border-box;">
+                            <section style="font-size: 16px;color: #ffffff;text-align: center;">{number}</section>
+                        </section>
+                    </section>
+                    <section style="flex-shrink: 0;display: flex;align-items: center;">
+                        <section
+                                style="width: 4px;height: 70%;border-right: 1px solid #7dbb91;border-top: 1px solid #7dbb91;border-bottom: 1px solid #7dbb91;box-sizing:border-box;"></section>
+                    </section>
+                </section>
+                <section style="width: 25px; margin-left: auto; margin-top: -20px; margin-right: -10px; box-sizing: border-box; transform: rotateZ(0deg); height: 0px;"></section>
+            </section>
+        </section>
+        <section style="background-color: #ebfaf0;padding: 10px;box-sizing:border-box;" >
+            <section style="width: 100%;max-width:100% !important;box-sizing:border-box;">
+                <img style="width: 100%; display: block;vertical-align:baseline;box-sizing:border-box;max-width:100% !important;"
+                     src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/QuIgtW9UfDWNvuuWAUQ7g2FzEQ9cmQ5bBMiaJ2micWQPKXRaEibDDTRAuMbhsv1Wt6Z02NAYRRiawVYnlmlsL0rKvg/0?wx_fmt=jpeg"></section>
+            <section style="text-align: justify;line-height:1.75em;letter-spacing: 1.5px;font-size:16px;color:#383838;background-color: transparent;padding-top: 10px;box-sizing:border-box;">
+               {txt}
+            </section>
+        </section>
+        <section style="display: flex;align-items: center;">
+            <section
+                    style="width: 100%;height: 1px;border-top: 1px solid #7dbb91;max-width:100% !important;box-sizing:border-box;"
+                    data-width="100%"></section>
+            <section style="flex-shrink: 0;">
+                <section style="width: 40px; margin-left: auto; margin-bottom: -10px; margin-top: -10px; box-sizing: border-box; height: 0px;"></section>
+            </section>
+        </section>
+    </section>
+</section>`;
 
     const END_HTML = `<section style="text-align: center;"><span leaf="" style="font-size: 12px;color: rgb(153, 153, 153);">点赞 分享&nbsp;幸福永远🌷点亮&nbsp;爱心❤&nbsp;天天开心！</span></section>`;
 

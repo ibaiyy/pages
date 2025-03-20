@@ -28,8 +28,18 @@
 <br>
 <!-- 添加输入框用于输入替换名称 -->
 <div class="row-item6">
+    <label for="keepPunctuation">保留标点符号:</label>
+    <input type="checkbox" checked id="keepPunctuation">
+
+    <!-- 添加输入框用于输入文字 1 和文字 2 -->
+    <label for="text1Input">文字 1：</label>
+    <input type="text" id="text1Input" value="默认文字 1">
+    <label for="text2Input">文字 2：</label>
+    <input type="text" id="text2Input" value="默认文字 2">
+
     <button onclick="processText()" class="btn-default btn-danger">处理文本</button>
     <button onclick="copyResult()" class="btn-default btn-primary">复制 HTML 结果</button>
+    <!-- 新增清空按钮 -->
     <button onclick="clearInputs()" class="btn-default btn-warning">清空输入框</button>
 </div>
 <!-- 添加一个容器来包含左右两列 -->
@@ -41,18 +51,23 @@
 </div>
 
 <script>
-    const HTML_TEMPLATE = `<div>
-  <div style="border: 1px solid #dbe2ef; padding: 10px; width: 98%; margin: 0 auto;">
-    <span style="background-color: pink; color: white; padding: 2px 5px;">{number}</span>
-    <div style="color:#384259;">
-      {txt}
-   </div>
-  </div>
-  <div style="text-align: center; margin-top: 10px;">
-    <img src="https://mmbiz.qpic.cn/mmbiz_jpg/fhibJCYCdoptNg4zXRJXMic3Z7FE7Lsd7hBDTXhkic90HFqibgnMllCLKpZ7zibYwzAHZQknnUiaUXHQAVPybvLj9yMA/0?wx_fmt=jpeg" alt="" style="width: 98%">
-  </div>
-    <hr style="border-style: solid; border-width: 1px 0px 0px; border-color: rgba(0, 0, 0, 0.1); transform-origin: 0px 0px; transform: scale(1,0.5); visibility: visible;">
+    const START_HTML = `<div style="text-align: center;">
+    <img src="https://mmbiz.qpic.cn/mmbiz_jpg/fhibJCYCdoptNg4zXRJXMic3Z7FE7Lsd7hBDTXhkic90HFqibgnMllCLKpZ7zibYwzAHZQknnUiaUXHQAVPybvLj9yMA/0?wx_fmt=jpeg" alt="图片" style="width: 98%;">
+    <p style="text-align: left; margin-top: 6px; font-size: 18px; line-height: 1.5; padding: 0 20px;">
+      {text1}
+    </p>
+    <p style="text-align: right; margin-top: 8px; margin-right: 40px; font-size: 16px;">
+      ----{text2}
+    </p>
   </div>`;
+
+    const HTML_TEMPLATE = `<div style="text-align: center;">
+    <span style="background-color: #dcedc2; color: white; padding: 5px 10px;border-radius: 50%; text-align: center;">{number}</span>
+    <div style="margin-top:10px">
+        {txt}
+    </div>
+    <img src="https://mmbiz.qpic.cn/mmbiz_jpg/fhibJCYCdoptNg4zXRJXMic3Z7FE7Lsd7hBDTXhkic90HFqibgnMllCLKpZ7zibYwzAHZQknnUiaUXHQAVPybvLj9yMA/0?wx_fmt=jpeg"  style="width: 98%; margin-top: 10px; border-radius: 5px;text-align:center">
+</div>`;
 
     const END_HTML = `<section style="text-align: center;"><span leaf="" style="font-size: 12px;color: rgb(153, 153, 153);">点赞 分享&nbsp;幸福永远🌷点亮&nbsp;爱心❤&nbsp;天天开心！</span></section>`;
 
@@ -83,6 +98,14 @@
             resultHTML += formatted;
         });
 
+        // 获取用户输入的文字 1 和文字 2
+        const text1 = document.getElementById('text1Input').value;
+        const text2 = document.getElementById('text2Input').value;
+        let startHtml = START_HTML;
+        startHtml = startHtml.replace('{text1}', text1);
+        startHtml = startHtml.replace('{text2}', text2);
+
+        resultHTML = startHtml + resultHTML;
         resultHTML += END_HTML;
         document.getElementById('resultHTML').innerHTML = resultHTML;
         document.getElementById('result_txt').value = resultHTML;

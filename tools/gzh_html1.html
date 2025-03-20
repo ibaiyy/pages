@@ -35,6 +35,7 @@
 
     <button onclick="processText()" class="btn-default btn-danger">处理文本</button>
     <button onclick="copyResult()" class="btn-default btn-primary">复制 HTML 结果</button>
+    <button onclick="clearInputs()" class="btn-default btn-warning">清空输入框</button>
 </div>
 <!-- 添加一个容器来包含左右两列 -->
 <div class="container">
@@ -170,6 +171,15 @@
 
         selection.removeAllRanges();
         alert('HTML 结果已复制到剪贴板');
+    }
+
+    // 新增清空输入框的函数
+    function clearInputs() {
+        document.getElementById('inputText').value = '';
+        document.getElementById('text1Input').value = '';
+        document.getElementById('text2Input').value = '';
+        document.getElementById('resultHTML').innerHTML = '';
+        document.getElementById('result_txt').value = '';
     }
 </script>
 </body>

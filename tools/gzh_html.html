@@ -13,27 +13,34 @@
         }
 
         .left-column {
-            width: 40%;
+            width: 60%;
         }
 
         .right-column {
-            width: 60%;
-            height: 60%;
+            width: 40%;
         }
     </style>
 </head>
 
 <body>
 <textarea id="inputText" rows="10" cols="50"
-          placeholder="【1\n人生如旅途，\n一边再见，一边遇见。\n#\n2\n要为喜欢的东西奔跑，\n走路真的来不及。\n#\n3\n永远不要提前焦虑，\n生活无非是见招拆招。"></textarea>
+          placeholder="1人生如旅途，一边再见，一边遇见。2要为喜欢的东西奔跑，走路真的来不及。3永远不要提前焦虑，生活无非是见招拆招。"></textarea>
 <br>
-<button onclick="processText()" class="btn-default btn-danger">处理文本</button>
-<button onclick="copyResult()" class="btn-default btn-primary">复制 HTML 结果</button>
+<!-- 添加输入框用于输入替换名称 -->
+<div class="row-item6">
+    <label for="nameInput">替换名称：</label>
+    <input type="text" id="nameInput" value="小库">
+    <label for="keepPunctuation">保留标点符号:</label>
+    <input type="checkbox" checked id="keepPunctuation">
+
+    <button onclick="processText()" class="btn-default btn-danger">处理文本</button>
+    <button onclick="copyResult()" class="btn-default btn-primary">复制 HTML 结果</button>
+</div>
 <!-- 添加一个容器来包含左右两列 -->
 <div class="container">
     <div class="left-column" id="resultHTML"></div>
     <div class="right-column" id="resultHTMLTXT">
-        <textarea id="result_txt"  rows="30" cols="50"></textarea>
+        <textarea id="result_txt" rows="30" cols="50"></textarea>
     </div>
 </div>
 
@@ -54,7 +61,7 @@
                         <section style="font-size: 15px; color: rgb(94, 126, 163); text-align: justify; box-sizing: border-box; visibility: visible;">
                             <p style="white-space: normal; margin: 0px; padding: 0px; box-sizing: border-box; visibility: visible;">
                                 <strong style="box-sizing: border-box; visibility: visible;">
-                                    <span style="visibility: visible;">小库 &nbsp;</span>
+                                    <span style="visibility: visible;">{name} &nbsp;</span>
                                 </strong>
                             </p>
                         </section>
@@ -81,7 +88,8 @@
 
     function processText() {
         const text = document.getElementById('inputText').value;
-        const result = processInputText(text);
+        const keepPunctuation = document.getElementById('keepPunctuation').checked;
+        const result = processInputText(text, keepPunctuation);
         const aResult = [];
 
         result.forEach(map => {
@@ -98,46 +106,46 @@
         });
 
         let resultHTML = '';
+        const name = document.getElementById('nameInput').value;
         aResult.forEach(map => {
             let formatted = HTML_TEMPLATE;
+            formatted = formatted.replace('{name}', name);
             formatted = formatted.replace('{txt}', map.txt);
             formatted = formatted.replace('{number}', map.number);
             resultHTML += formatted;
         });
 
         document.getElementById('resultHTML').innerHTML = resultHTML;
-
         document.getElementById('result_txt').value = resultHTML;
-
     }
 
-    function processInputText(text) {
+    function processInputText(text, keepPunctuation) {
         const allContents = [];
-        const parts = text.split('#');
-        parts.forEach(part => {
-            processContent(allContents, part.trim());
+        // 去除全部空白字符
+        text = text.replace(/\s/g, '');
+        // 按照数字拆分文本
+        const parts = text.split(/\d+/).filter(part => part !== '');
+        const numbers = text.match(/\d+/g);
+        parts.forEach((part, index) => {
+            processContent(allContents, part, numbers[index], keepPunctuation);
         });
         return allContents;
     }
 
-    function processContent(allContents, content) {
+    function processContent(allContents, content, number, keepPunctuation) {
         if (content === '') {
             return;
         }
-        const lines = content.split('\n');
-        if (lines.length > 0) {
-            const firstLine = lines[0].replace('[', '').replace(']', '').trim();
-            const textLines = [];
-            for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (line !== '') {
-                    textLines.push(line);
-                }
-            }
-            const map = {};
-            map[firstLine] = textLines;
-            allContents.push(map);
+        // 按照标点符号拆分句子
+        let textLines;
+        if (keepPunctuation) {
+            textLines = content.split(/(?<=[，。！？])/).filter(line => line !== '');
+        } else {
+            textLines = content.split(/[，。！？]/).filter(line => line !== '');
         }
+        const map = {};
+        map[number] = textLines;
+        allContents.push(map);
     }
 
     function copyResult() {

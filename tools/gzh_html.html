@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./../css/common.css" rel="stylesheet" type="text/css">
+    <title>Text to HTML Converter</title>
+    <style>
+        /* 使用 flexbox 布局 */
+        .container {
+            display: flex;
+        }
+
+        .left-column {
+            width: 40%;
+        }
+
+        .right-column {
+            width: 60%;
+            height: 60%;
+        }
+    </style>
+</head>
+
+<body>
+<textarea id="inputText" rows="10" cols="50"
+          placeholder="【1\n人生如旅途，\n一边再见，一边遇见。\n#\n2\n要为喜欢的东西奔跑，\n走路真的来不及。\n#\n3\n永远不要提前焦虑，\n生活无非是见招拆招。"></textarea>
+<br>
+<button onclick="processText()" class="btn-default btn-danger">处理文本</button>
+<button onclick="copyResult()" class="btn-default btn-primary">复制 HTML 结果</button>
+<!-- 添加一个容器来包含左右两列 -->
+<div class="container">
+    <div class="left-column" id="resultHTML"></div>
+    <div class="right-column" id="resultHTMLTXT">
+        <textarea id="result_txt"  rows="30" cols="50"></textarea>
+    </div>
+</div>
+
+<script>
+    const HTML_TEMPLATE = `<div>
+            <section style="box-sizing: border-box; font-style: normal; font-weight: 400; text-align: justify; color: rgb(62, 62, 62); visibility: visible;">
+                <section style="text-align: left; transform: translate3d(3px, 0px, 0px); opacity: 1; box-sizing: border-box; visibility: visible;">
+                    <section style="font-size: 16px; display: inline-block; vertical-align: top; width: 9%; height: auto; box-sizing: border-box; visibility: visible;">
+                        <section style="margin-top: 0px; margin-bottom: 0px; transform-origin: center center; box-sizing: border-box; visibility: visible;">
+                            <section style="line-height: 0; text-align: center; margin: 10px 0px 0px; opacity: 1; transform: translate3d(-5px, 0px, 0px); box-sizing: border-box; visibility: visible;">
+                                <section style="vertical-align: middle; display: inline-block; line-height: 0; width: 90%; height: auto; box-shadow: rgb(0, 0, 0) 0px 0px 0px 0px; box-sizing: border-box; visibility: visible;" nodeleaf="">
+                                    <img src="https://mmbiz.qpic.cn/mmbiz_jpg/fhibJCYCdoptNg4zXRJXMic3Z7FE7Lsd7hBDTXhkic90HFqibgnMllCLKpZ7zibYwzAHZQknnUiaUXHQAVPybvLj9yMA/0?wx_fmt=jpeg" alt="头像">
+                                </section>
+                            </section>
+                        </section>
+                    </section>
+                    <section style="display: inline-block; vertical-align: top; width: 80%; line-height: 2; height: auto; padding: 0px 0px 0px 5px; box-sizing: border-box; visibility: visible;">
+                        <section style="font-size: 15px; color: rgb(94, 126, 163); text-align: justify; box-sizing: border-box; visibility: visible;">
+                            <p style="white-space: normal; margin: 0px; padding: 0px; box-sizing: border-box; visibility: visible;">
+                                <strong style="box-sizing: border-box; visibility: visible;">
+                                    <span style="visibility: visible;">小库 &nbsp;</span>
+                                </strong>
+                            </p>
+                        </section>
+                        <section style="opacity: 1; box-sizing: border-box; visibility: visible;">
+                            <section style="box-sizing: border-box; visibility: visible;">
+                                {txt}
+                            </section>
+                        </section>
+                        <section style="font-size: 16px; text-align: center; margin: 5px 0px; line-height: 0; box-sizing: border-box; visibility: visible;">
+                            <section style="vertical-align: middle; display: inline-block; line-height: 0; width: 100%; border-width: 0px; height: auto; box-sizing: border-box; visibility: visible;" nodeleaf="">
+                                <img style="width: 457px !important; height: auto !important; visibility: visible !important;" src="https://mmbiz.qpic.cn/mmbiz_jpg/fhibJCYCdoptNg4zXRJXMic3Z7FE7Lsd7hBDTXhkic90HFqibgnMllCLKpZ7zibYwzAHZQknnUiaUXHQAVPybvLj9yMA/0?wx_fmt=jpeg" alt="图片">
+                            </section>
+                        </section>
+                        <section style="font-size: 12px; text-align: justify; color: rgb(160, 160, 160); box-sizing: border-box; visibility: visible;">
+                            <p style="white-space: normal; margin: 0px; padding: 0px; box-sizing: border-box; visibility: visible;">
+                                {number}分钟前
+                            </p>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <hr style="border-style: solid; border-width: 1px 0px 0px; border-color: rgba(0, 0, 0, 0.1); transform-origin: 0px 0px; transform: scale(1,0.5); visibility: visible;">
+        </div>`;
+
+    function processText() {
+        const text = document.getElementById('inputText').value;
+        const result = processInputText(text);
+        const aResult = [];
+
+        result.forEach(map => {
+            for (const [key, value] of Object.entries(map)) {
+                const map1 = {};
+                map1.number = key;
+                let txt = '';
+                value.forEach(line => {
+                    txt += `<p style="visibility: visible;font-size: 15px; ">${line}</p>`;
+                });
+                map1.txt = txt;
+                aResult.push(map1);
+            }
+        });
+
+        let resultHTML = '';
+        aResult.forEach(map => {
+            let formatted = HTML_TEMPLATE;
+            formatted = formatted.replace('{txt}', map.txt);
+            formatted = formatted.replace('{number}', map.number);
+            resultHTML += formatted;
+        });
+
+        document.getElementById('resultHTML').innerHTML = resultHTML;
+
+        document.getElementById('result_txt').value = resultHTML;
+
+    }
+
+    function processInputText(text) {
+        const allContents = [];
+        const parts = text.split('#');
+        parts.forEach(part => {
+            processContent(allContents, part.trim());
+        });
+        return allContents;
+    }
+
+    function processContent(allContents, content) {
+        if (content === '') {
+            return;
+        }
+        const lines = content.split('\n');
+        if (lines.length > 0) {
+            const firstLine = lines[0].replace('[', '').replace(']', '').trim();
+            const textLines = [];
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line !== '') {
+                    textLines.push(line);
+                }
+            }
+            const map = {};
+            map[firstLine] = textLines;
+            allContents.push(map);
+        }
+    }
+
+    function copyResult() {
+        const resultHTML = document.getElementById('resultHTML');
+        const range = document.createRange();
+        range.selectNodeContents(resultHTML);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        const htmlToCopy = resultHTML.innerHTML;
+        const textArea = document.createElement('textarea');
+        textArea.value = htmlToCopy;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        selection.removeAllRanges();
+        alert('HTML 结果已复制到剪贴板');
+    }
+</script>
+</body>
+
+</html>

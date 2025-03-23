@@ -97,18 +97,14 @@
         <div class="input-group">
             <label>歌词输入：</label>
             <textarea id="lyricInput">
-                在这深夜我抬头仰望
-                你的方向
-                星光闪耀
-                如花绽放
-                你可知道我多渴望
-                像你一样
+
             </textarea>
         </div>
         <div class="input-group">
             <label>歌名-作者：</label>
-            <input type="text" id="songInfo" value="天狐·李健">
+            <input type="text" id="songInfo" value="">
         </div>
+        <button onclick="clearInputs()" class="btn-default btn-warning">清空输入框</button>
         <button onclick="preview()" class="btn-default btn-primary">预览</button>
         <button onclick="generatePoster()" class="btn-default btn-danger">下载</button>
     </div>
@@ -148,6 +144,12 @@
             link.download = `lyric_poster_${Date.now()}.png`;
             link.click();
         });
+    }
+
+    // 新增清空输入框的函数
+    function clearInputs() {
+        document.getElementById('songInfo').value = '';
+        document.getElementById('lyricInput').value = '';
     }
 </script>
 </body>

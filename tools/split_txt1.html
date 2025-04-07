@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <title>文本拆分处理</title>
+</head>
+
+<body class="bg-gray-100 flex justify-center items-center h-screen">
+    <div class="flex w-4/5 h-4/5 bg-white shadow-lg rounded-lg overflow-hidden">
+        <div class="w-1/2 p-6">
+            <button id="processButton" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">拆分处理文本</button>
+            <textarea id="inputText" class="w-full h-full border border-gray-300 p-2 resize-none" placeholder="请输入文本"></textarea>
+        </div>
+        <div class="w-1/2 p-6 border-l border-gray-300">
+            <button id="copyButton" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">复制</button>
+            <textarea id="outputText" class="w-full h-full border border-gray-300 p-2 resize-none" placeholder="处理后的文本将显示在这里" readonly></textarea>
+        </div>
+    </div>
+    <script>
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const processButton = document.getElementById('processButton');
+        const copyButton = document.getElementById('copyButton');
+
+        processButton.addEventListener('click', () => {
+            const text = inputText.value;
+            const processedText = text.replace(/。/g, '。\n\n');
+            outputText.value = processedText;
+        });
+
+        copyButton.addEventListener('click', () => {
+            outputText.select();
+            document.execCommand('copy');
+            alert('已复制到剪贴板');
+        });
+    </script>
+</body>
+
+</html>
+    
